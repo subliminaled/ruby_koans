@@ -18,7 +18,8 @@ class AboutNil < EdgeCase::Koan
     #  in a sandbox and catching the error class into the exception
     #  variable.  
     #
-    exception = assert_raise(___) do
+
+    exception = assert_raise(NoMethodError) do
       nil.some_method_nil_doesnt_know_about
     end
     
@@ -26,13 +27,19 @@ class AboutNil < EdgeCase::Koan
     #  What is the error message itself? What substring or pattern could 
     #  you test against in order to have a good idea what the string is?
     #  
-    assert_match /__/, exception.message
+    expected_message = "undefined method"
+    
+    assert_match expected_message, exception.message
+    # very cool to see the match method have a regex built in to match on substring.
   end
 
   def test_nil_has_a_few_methods_defined_on_it
-    assert_equal __, nil.nil?
-    assert_equal __, nil.to_s
-    assert_equal __, nil.inspect
+    empty_string = String.new("")
+    nil_string = String.new("nil")
+    
+    assert_equal true, nil.nil?
+    assert_equal empty_string, nil.to_s
+    assert_equal nil_string, nil.inspect
 
     # THINK ABOUT IT:
     #
@@ -41,6 +48,10 @@ class AboutNil < EdgeCase::Koan
     # or
     #    obj == nil
     # Why?
+    
+    # from my limited understanding right now, they both appear to be the same.  Both will
+    # check the object for a nil value.  I guess if nil is an object the obj == nil check might return a false positive?
+    # maybe the obj.nil? is a better check if you truly want to check if an object is null?
   end
 
 end

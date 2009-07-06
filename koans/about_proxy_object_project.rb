@@ -15,8 +15,38 @@ require 'edgecase'
 class Proxy
   def initialize(target_object)
     @object = target_object
+    @messages = Array.new()
   end
-end
+ 
+  def method_missing(method_name,*args,&block)
+          @messages.push(method_name)
+    if respond_to?(method_name)
+      @object.__send__(method_name,*args,&block)
+    else
+      super(method_name,*args,&block)
+    end
+  end
+  
+  def respond_to?(method_name)
+    if @object.respond_to?(method_name)
+      true
+    else
+        false
+    end
+  end
+  
+  def messages
+    @messages
+  end
+  
+  def called?(method_name)
+    @messages.include?(method_name)
+  end
+  
+  def number_of_times_called(method_name)
+    @messages.find_all {|recorded_method|recorded_method == method_name }.size
+  end
+ end
 
 # The proxy object should pass the following Koan:
 #
